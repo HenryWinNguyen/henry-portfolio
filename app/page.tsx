@@ -37,7 +37,7 @@ const experiences: Exp[] = [
     summary:
       "Evaluated and improved LLM outputs across 150+ STEM/coding prompts—surfacing logical flaws and edge cases—and partnered with researchers to fine-tune models, boosting accuracy, reliability, and adaptability across applications.",
     tech: ["LLMs", "Python", "Evaluation", "Fine-tuning"],
-    logoScale: 2.75,
+    logoScale: 2.4,
   },
   {
     company: "ECOM",
