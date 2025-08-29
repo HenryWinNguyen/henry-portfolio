@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
+import ProjectsShowcase from "./components/ProjectsShowcase";
 
 /* ===== Experience data (most recent first) ===== */
 type Exp = {
@@ -167,6 +168,7 @@ function ExperienceCarousel() {
   );
 }
 
+
 export default function Home() {
   return (
     <main className="relative min-h-screen overflow-hidden bg-neutral-950 text-neutral-100">
@@ -207,6 +209,7 @@ export default function Home() {
           <span className="text-base font-semibold tracking-tight">Henry Nguyen</span>
           <ul className="hidden items-center gap-6 text-sm text-neutral-300 sm:flex">
             <li><a href="#about" className="hover:text-white">About</a></li>
+            <li><a href="#projects" className="hover:text-white">Projects</a></li>
             <li><a href="#experience" className="hover:text-white">Experience</a></li>
             <li><a href="#contact" className="hover:text-white">Contact</a></li>
           </ul>
@@ -289,6 +292,9 @@ export default function Home() {
 
       {/* ---- EXPERIENCE CAROUSEL ---- */}
       <ExperienceCarousel />
+
+      {/* ---- PROJECTS ---- */}
+      <ProjectsShowcase />
 
       {/* ---- CONTACT / FOOTER ---- */}
       <footer id="contact" className="relative z-10 mx-auto w-full max-w-6xl px-4 py-16 border-t border-white/10">
