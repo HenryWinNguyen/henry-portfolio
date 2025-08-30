@@ -1,189 +1,241 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 
 export type Project = {
   title: string;
   description: string;
-  cover: string;          // /projects/momentum_cover.png
-  screenshots: string[];  // ['/projects/momentum_tasks.png', '/projects/momentum_wins.png']
+  cover: string;
+  screenshots: string[];
   tags: string[];
   codeUrl: string;
-  storeUrl?: string;      // leave '' or undefined until approved
+  storeUrl?: string;
 };
 
-export default function ProjectCard({
-  title,
-  description,
-  cover,
-  screenshots,
-  tags,
-  codeUrl,
-  storeUrl,
-}: Project) {
+export default function ProjectCard(props: Project) {
+  const { title, description, cover, screenshots, tags, codeUrl, storeUrl } = props;
+
   const [flipped, setFlipped] = useState(false);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
   const [idx, setIdx] = useState(0);
 
+  const openLightbox = (startIndex = 0) => {
+    setIdx(startIndex);
+    setLightboxOpen(true);
+  };
+
+  const closeLightbox = () => setLightboxOpen(false);
   const next = () => setIdx((i) => (i + 1) % screenshots.length);
   const prev = () => setIdx((i) => (i - 1 + screenshots.length) % screenshots.length);
 
+  // keyboard for lightbox
+  useEffect(() => {
+    if (!lightboxOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') closeLightbox();
+      if (e.key === 'ArrowRight') next();
+      if (e.key === 'ArrowLeft') prev();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [lightboxOpen]);
+
   return (
-    <div
-      className="relative h-[520px] w-full max-w-[380px]"
-      style={{ perspective: '1200px' }}                // 3D perspective
-    >
-      <motion.div
-        className="absolute inset-0 [transform-style:preserve-3d] rounded-2xl"
-        animate={{ rotateY: flipped ? 180 : 0 }}
-        transition={{ duration: 0.6, ease: 'easeInOut' }}
-        whileHover={{ y: -6, boxShadow: '0 20px 40px rgba(0,0,0,0.35)' }}
-      >
-        {/* FRONT */}
-        <div className="absolute inset-0 [backface-visibility:hidden] overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur">
-          <div className="relative h-48 w-full">
-            <Image
-              src={cover}
-              alt={`${title} cover`}
-              fill
-              sizes="380px"
-              className="object-cover"
-              priority
-            />
-            <div className="absolute inset-0 bg-gradient-to-b from-black/20 to-transparent" />
-          </div>
-
-          <div className="p-5">
-            <h3 className="text-xl font-semibold">{title}</h3>
-            <p className="mt-2 text-sm text-neutral-300">{description}</p>
-
-            <div className="mt-3 flex flex-wrap gap-2">
-              {tags.map((t) => (
-                <span
-                  key={t}
-                  className="px-2.5 py-1 rounded-full text-xs font-medium bg-yellow-100/20 text-yellow-200 border border-yellow-200/30"
-                >
-                  {t}
-                </span>
-              ))}
-            </div>
-
-            <div className="mt-5 flex gap-3">
-              <a
-                href={codeUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-3 py-2 rounded-lg bg-white/10 border border-white/15 text-sm hover:bg-white/20 transition"
-              >
-                View Code
-              </a>
-
-              {storeUrl ? (
-                <a
-                  href={storeUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-3 py-2 rounded-lg bg-yellow-400 text-black text-sm font-semibold hover:bg-yellow-300 transition"
-                >
-                  Chrome Store
-                </a>
-              ) : (
-                <span className="px-3 py-2 rounded-lg bg-white/10 border border-white/15 text-sm text-neutral-300 cursor-not-allowed">
-                  Chrome Store — Soon
-                </span>
-              )}
-            </div>
-
-            <button
-              onClick={() => setFlipped(true)}
-              className="mt-5 w-full rounded-lg border border-white/15 bg-white/5 py-2 text-sm hover:bg-white/10 transition"
-            >
-              View Screenshots
-            </button>
-          </div>
-        </div>
-
-        {/* BACK */}
-        <div
-          className="absolute inset-0 [backface-visibility:hidden] overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur"
-          style={{ transform: 'rotateY(180deg)' }}
+    <>
+      {/* CARD */}
+      <div className="group relative h-[520px] w-full max-w-[380px]" style={{ perspective: '1200px' }}>
+        <motion.div
+          className="absolute inset-0 [transform-style:preserve-3d] rounded-2xl"
+          animate={{ rotateY: flipped ? 180 : 0 }}
+          transition={{ duration: 0.6, ease: 'easeInOut' }}
+          whileHover={{ y: -6, boxShadow: '0 20px 40px rgba(0,0,0,0.35)' }}
         >
-          <div className="relative h-64 w-full">
-            <Image
-              src={screenshots[idx]}
-              alt={`${title} screenshot ${idx + 1}`}
-              fill
-              sizes="380px"
-              className="object-cover"
-            />
+          {/* FRONT */}
+          <div className="absolute inset-0 [backface-visibility:hidden] overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur">
+            {/* Cover */}
+            <div className="relative h-48 w-full">
+              <Image src={cover} alt={`${title} cover`} fill sizes="380px" className="object-cover" priority />
+              <div className="absolute inset-0 bg-gradient-to-b from-black/15 to-transparent" />
+            </div>
 
-            {/* arrows */}
-            {screenshots.length > 1 && (
-              <>
-                <button
-                  onClick={prev}
-                  className="absolute left-3 top-1/2 -translate-y-1/2 grid place-items-center h-9 w-9 rounded-full bg-black/45 text-white hover:bg-black/60"
-                  aria-label="Previous screenshot"
-                >
-                  ‹
-                </button>
-                <button
-                  onClick={next}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 grid place-items-center h-9 w-9 rounded-full bg-black/45 text-white hover:bg-black/60"
-                  aria-label="Next screenshot"
-                >
-                  ›
-                </button>
-              </>
-            )}
+            {/* Content, centered */}
+            <div className="px-6 pb-6 pt-5 text-center">
+              <h3
+                className="text-2xl font-semibold transition-transform duration-200 group-hover:scale-[1.04]"
+                aria-label={title}
+              >
+                {title}
+              </h3>
 
-            {/* dots */}
-            <div className="absolute bottom-3 left-0 right-0 flex justify-center gap-2">
-              {screenshots.map((_, i) => (
-                <span
-                  key={i}
-                  className={`h-2 w-2 rounded-full ${i === idx ? 'bg-yellow-400' : 'bg-white/40'}`}
-                />
-              ))}
+              <p className="mt-3 text-sm text-neutral-300">{description}</p>
+
+              <div className="mt-4 flex flex-wrap justify-center gap-2">
+                {tags.map((t) => (
+                  <span
+                    key={t}
+                    className="px-2.5 py-1 rounded-full text-xs font-medium bg-yellow-100/20 text-yellow-200 border border-yellow-200/30"
+                  >
+                    {t}
+                  </span>
+                ))}
+              </div>
+
+              {/* Store + Rotate row */}
+              <div className="mt-5 flex items-center justify-center gap-3">
+                {storeUrl ? (
+                  <a
+                    href={storeUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-4 py-2 rounded-lg bg-yellow-400 text-black text-sm font-semibold hover:bg-yellow-300 transition"
+                  >
+                    View on Chrome Web Store
+                  </a>
+                ) : (
+                  <span className="px-4 py-2 rounded-lg bg-white/10 border border-white/15 text-sm text-neutral-300 cursor-not-allowed">
+                    Chrome Store — Pending Review
+                  </span>
+                )}
+
+                {/* small rotate icon */}
+                <button
+                  aria-label="Flip to screenshots side"
+                  onClick={() => setFlipped(true)}
+                  className="grid place-items-center h-9 w-9 rounded-full border border-white/15 bg-white/10 hover:bg-white/20 transition"
+                  title="View screenshots"
+                >
+                  ↻
+                </button>
+              </div>
             </div>
           </div>
 
-          <div className="p-5">
-            <h4 className="text-lg font-semibold">{title}</h4>
-            <p className="mt-1 text-sm text-neutral-300">Click arrows to browse. </p>
-
-            <div className="mt-4 flex gap-3">
-              <button
-                onClick={() => setFlipped(false)}
-                className="px-3 py-2 rounded-lg bg-white/10 border border-white/15 text-sm hover:bg-white/20 transition"
-              >
-                Back
-              </button>
-
-              <a
-                href={codeUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-3 py-2 rounded-lg bg-white/10 border border-white/15 text-sm hover:bg-white/20 transition"
-              >
-                Code
-              </a>
-
-              {storeUrl ? (
-                <a
-                  href={storeUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-3 py-2 rounded-lg bg-yellow-400 text-black text-sm font-semibold hover:bg-yellow-300 transition"
+          {/* BACK (preview + actions) */}
+          <div
+            className="absolute inset-0 [backface-visibility:hidden] overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur"
+            style={{ transform: 'rotateY(180deg)' }}
+          >
+            {/* Minimal preview header */}
+            <div className="relative h-48 w-full">
+              <Image
+                src={screenshots[0]}
+                alt={`${title} preview`}
+                fill
+                sizes="380px"
+                className="object-cover"
+                onClick={() => openLightbox(0)}
+              />
+              <div className="absolute bottom-3 right-3">
+                <button
+                  onClick={() => openLightbox(0)}
+                  className="px-3 py-1.5 rounded-lg bg-black/55 text-white text-xs hover:bg-black/70 transition"
                 >
-                  Store
-                </a>
-              ) : null}
+                  Open Gallery
+                </button>
+              </div>
+            </div>
+
+            <div className="px-6 pb-6 pt-5">
+              <div className="flex items-center justify-between">
+                <h4 className="text-lg font-semibold">{title}</h4>
+                <div className="flex items-center gap-2">
+                  <a
+                    href={codeUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-3 py-2 rounded-lg bg-white/10 border border-white/15 text-sm hover:bg-white/20 transition"
+                  >
+                    View Code
+                  </a>
+                  <button
+                    onClick={() => setFlipped(false)}
+                    aria-label="Flip back"
+                    className="grid place-items-center h-9 w-9 rounded-full border border-white/15 bg-white/10 hover:bg-white/20 transition"
+                    title="Back"
+                  >
+                    ↻
+                  </button>
+                </div>
+              </div>
+              <p className="mt-2 text-sm text-neutral-300">
+                Click “Open Gallery” to view full screenshots.
+              </p>
+            </div>
+          </div>
+        </motion.div>
+      </div>
+
+      {/* LIGHTBOX (full-screen, outside card) */}
+      {lightboxOpen && (
+        <div
+          className="fixed inset-0 z-[999] bg-black/80 backdrop-blur-sm"
+          onClick={closeLightbox}
+          role="dialog"
+          aria-modal="true"
+        >
+          <div
+            className="absolute inset-0 m-6 md:m-12 lg:m-16 grid place-items-center"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="relative w-full max-w-5xl">
+              {/* image */}
+              <div className="relative w-full" style={{ aspectRatio: '16 / 10' }}>
+                <Image
+                  src={screenshots[idx]}
+                  alt={`${title} screenshot ${idx + 1}`}
+                  fill
+                  sizes="100vw"
+                  className="object-contain"
+                  priority
+                />
+              </div>
+
+              {/* arrows */}
+              {screenshots.length > 1 && (
+                <>
+                  <button
+                    onClick={prev}
+                    aria-label="Previous"
+                    className="absolute left-2 top-1/2 -translate-y-1/2 grid place-items-center h-11 w-11 rounded-full bg-white/10 border border-white/20 text-white hover:bg-white/20"
+                  >
+                    ‹
+                  </button>
+                  <button
+                    onClick={next}
+                    aria-label="Next"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 grid place-items-center h-11 w-11 rounded-full bg-white/10 border border-white/20 text-white hover:bg-white/20"
+                  >
+                    ›
+                  </button>
+                </>
+              )}
+
+              {/* dots */}
+              <div className="mt-4 flex justify-center gap-2">
+                {screenshots.map((_, i) => (
+                  <span
+                    key={i}
+                    className={`h-2.5 w-2.5 rounded-full ${i === idx ? 'bg-yellow-400' : 'bg-white/40'}`}
+                  />
+                ))}
+              </div>
+
+              {/* close */}
+              <div className="absolute -top-4 right-0">
+                <button
+                  onClick={closeLightbox}
+                  aria-label="Close"
+                  className="grid place-items-center h-9 w-9 rounded-full bg-white/10 border border-white/20 text-white hover:bg-white/20"
+                >
+                  ✕
+                </button>
+              </div>
             </div>
           </div>
         </div>
-      </motion.div>
-    </div>
+      )}
+    </>
   );
 }
