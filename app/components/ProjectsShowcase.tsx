@@ -6,7 +6,8 @@ const projects: Project[] = [
   {
     title: 'Momentum Chrome Extension',
     description:
-      'Manage school tasks, set reminders, and track daily wins. Built with React + TypeScript + Tailwind + Chrome APIs.',
+    "A lightweight Google Chrome extension for personal use that keeps simple daily tasks, assignments, and to-dos at your fingertips in the browser. Available on the Chrome Web Store (pending review).",
+  
     cover: '/projects/momentum_cover.png',
     screenshots: [
       '/projects/momentum_tasks.png',
