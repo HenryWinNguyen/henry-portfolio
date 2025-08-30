@@ -14,7 +14,7 @@ const projects: Project[] = [
       '/projects/momentum_wins.png',
     ],
     tags: ['React', 'TypeScript', 'Tailwind', 'Chrome APIs'],
-    codeUrl: 'https://github.com/HenryWinNguyen/momentum-extension',
+    codeUrl: "https://github.com/HenryWinNguyen/momentum-extension",
     storeUrl: '', // paste the store link here when approved
   },
   // add more projects here later
