@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 
@@ -30,7 +30,7 @@ export default function ProjectCard(props: Project) {
   const next = () => setIdx((i) => (i + 1) % screenshots.length);
   const prev = () => setIdx((i) => (i - 1 + screenshots.length) % screenshots.length);
 
-  // keyboard for lightbox
+  // keyboard shortcuts for lightbox
   useEffect(() => {
     if (!lightboxOpen) return;
     const onKey = (e: KeyboardEvent) => {
@@ -45,12 +45,14 @@ export default function ProjectCard(props: Project) {
   return (
     <>
       {/* CARD */}
-      <div className="group relative h-[520px] w-full max-w-[380px]" style={{ perspective: '1200px' }}>
+      <div
+        className="group relative h-[520px] w-full max-w-[380px] transition-transform duration-300 hover:scale-[1.03]"
+        style={{ perspective: '1200px' }}
+      >
         <motion.div
           className="absolute inset-0 [transform-style:preserve-3d] rounded-2xl"
           animate={{ rotateY: flipped ? 180 : 0 }}
           transition={{ duration: 0.6, ease: 'easeInOut' }}
-          whileHover={{ y: -6, boxShadow: '0 20px 40px rgba(0,0,0,0.35)' }}
         >
           {/* FRONT */}
           <div className="absolute inset-0 [backface-visibility:hidden] overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur">
@@ -60,12 +62,9 @@ export default function ProjectCard(props: Project) {
               <div className="absolute inset-0 bg-gradient-to-b from-black/15 to-transparent" />
             </div>
 
-            {/* Content, centered */}
+            {/* Content */}
             <div className="px-6 pb-6 pt-5 text-center">
-              <h3
-                className="text-2xl font-semibold transition-transform duration-200 group-hover:scale-[1.04]"
-                aria-label={title}
-              >
+              <h3 className="text-2xl font-semibold transition-transform duration-200 group-hover:scale-[1.04]">
                 {title}
               </h3>
 
@@ -82,7 +81,7 @@ export default function ProjectCard(props: Project) {
                 ))}
               </div>
 
-              {/* Store + Rotate row */}
+              {/* Store + Rotate */}
               <div className="mt-5 flex items-center justify-center gap-3">
                 {storeUrl ? (
                   <a
@@ -99,7 +98,6 @@ export default function ProjectCard(props: Project) {
                   </span>
                 )}
 
-                {/* small rotate icon */}
                 <button
                   aria-label="Flip to screenshots side"
                   onClick={() => setFlipped(true)}
@@ -112,19 +110,19 @@ export default function ProjectCard(props: Project) {
             </div>
           </div>
 
-          {/* BACK (preview + actions) */}
+          {/* BACK */}
           <div
             className="absolute inset-0 [backface-visibility:hidden] overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur"
             style={{ transform: 'rotateY(180deg)' }}
           >
-            {/* Minimal preview header */}
+            {/* Preview */}
             <div className="relative h-48 w-full">
               <Image
                 src={screenshots[0]}
                 alt={`${title} preview`}
                 fill
                 sizes="380px"
-                className="object-cover"
+                className="object-cover cursor-pointer"
                 onClick={() => openLightbox(0)}
               />
               <div className="absolute bottom-3 right-3">
@@ -137,37 +135,38 @@ export default function ProjectCard(props: Project) {
               </div>
             </div>
 
-            <div className="px-6 pb-6 pt-5">
-              <div className="flex items-center justify-between">
-                <h4 className="text-lg font-semibold">{title}</h4>
-                <div className="flex items-center gap-2">
-                  <a
-                    href={codeUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="px-3 py-2 rounded-lg bg-white/10 border border-white/15 text-sm hover:bg-white/20 transition"
-                  >
-                    View Code
-                  </a>
-                  <button
-                    onClick={() => setFlipped(false)}
-                    aria-label="Flip back"
-                    className="grid place-items-center h-9 w-9 rounded-full border border-white/15 bg-white/10 hover:bg-white/20 transition"
-                    title="Back"
-                  >
-                    ↻
-                  </button>
-                </div>
-              </div>
-              <p className="mt-2 text-sm text-neutral-300">
+            {/* Content, centered */}
+            <div className="px-6 pb-6 pt-8 flex flex-col items-center justify-center text-center min-h-[260px]">
+              <h4 className="text-xl font-semibold mb-3">{title}</h4>
+
+              <p className="text-sm text-neutral-300 max-w-[260px] mb-5">
                 Click “Open Gallery” to view full screenshots.
               </p>
+
+              <div className="flex items-center gap-3">
+                <a
+                  href={codeUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-4 py-2 rounded-lg bg-white/10 border border-white/15 text-sm hover:bg-white/20 transition"
+                >
+                  View Code
+                </a>
+                <button
+                  onClick={() => setFlipped(false)}
+                  aria-label="Flip back"
+                  className="grid place-items-center h-9 w-9 rounded-full border border-white/15 bg-white/10 hover:bg-white/20 transition"
+                  title="Back"
+                >
+                  ↻
+                </button>
+              </div>
             </div>
           </div>
         </motion.div>
       </div>
 
-      {/* LIGHTBOX (full-screen, outside card) */}
+      {/* LIGHTBOX */}
       {lightboxOpen && (
         <div
           className="fixed inset-0 z-[999] bg-black/80 backdrop-blur-sm"
@@ -180,7 +179,6 @@ export default function ProjectCard(props: Project) {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="relative w-full max-w-5xl">
-              {/* image */}
               <div className="relative w-full" style={{ aspectRatio: '16 / 10' }}>
                 <Image
                   src={screenshots[idx]}
