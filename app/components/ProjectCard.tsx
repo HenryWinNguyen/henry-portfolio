@@ -12,6 +12,7 @@ export type Project = {
   tags: string[];
   codeUrl: string;
   storeUrl?: string;
+  disableFlip?: boolean; 
 };
 
 export default function ProjectCard(props: Project) {
@@ -51,7 +52,7 @@ export default function ProjectCard(props: Project) {
       >
         <motion.div
           className="absolute inset-0 [transform-style:preserve-3d] rounded-2xl"
-          animate={{ rotateY: flipped ? 180 : 0 }}
+          animate={{ rotateY: props.disableFlip ? 0 : (flipped ? 180 : 0) }}
           transition={{ duration: 0.6, ease: 'easeInOut' }}
         >
           {/* FRONT */}
@@ -97,7 +98,7 @@ export default function ProjectCard(props: Project) {
                     Chrome Store — Pending Review
                   </span>
                 )}
-
+              {!props.disableFlip && (
                 <button
                   aria-label="Flip to screenshots side"
                   onClick={() => setFlipped(true)}
@@ -106,65 +107,72 @@ export default function ProjectCard(props: Project) {
                 >
                   ↻
                 </button>
+              )}
               </div>
             </div>
           </div>
 
-          {/* BACK */}
-          <div
-            className="absolute inset-0 [backface-visibility:hidden] overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur"
-            style={{ transform: 'rotateY(180deg)' }}
-          >
-            {/* Preview */}
-            <div className="relative h-48 w-full">
-              <Image
-                src={screenshots[0]}
-                alt={`${title} preview`}
-                fill
-                sizes="380px"
-                className="object-cover cursor-pointer"
-                onClick={() => openLightbox(0)}
-              />
-              <div className="absolute bottom-3 right-3">
-                <button
-                  onClick={() => openLightbox(0)}
-                  className="px-3 py-1.5 rounded-lg bg-black/55 text-white text-xs hover:bg-black/70 transition"
-                >
-                  Open Gallery
-                </button>
-              </div>
-            </div>
-
-            {/* Content, centered */}
-            <div className="px-6 pb-6 pt-8 flex flex-col items-center justify-center text-center min-h-[260px]">
-              <h4 className="text-xl font-semibold mb-3">{title}</h4>
-
-              <p className="text-sm text-neutral-300 max-w-[260px] mb-5">
-                Click “Open Gallery” to view full screenshots.
-              </p>
-
-              <div className="flex items-center gap-3">
-                <a
-                  href={codeUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-4 py-2 rounded-lg bg-white/10 border border-white/15 text-sm hover:bg-white/20 transition"
-                >
-                  View Code
-                </a>
-                <button
-                  onClick={() => setFlipped(false)}
-                  aria-label="Flip back"
-                  className="grid place-items-center h-9 w-9 rounded-full border border-white/15 bg-white/10 hover:bg-white/20 transition"
-                  title="Back"
-                >
-                  ↻
-                </button>
-              </div>
-            </div>
-          </div>
-        </motion.div>
+          {/* BACK: render only when flipping is enabled */}
+{!props.disableFlip && (
+  <div
+    className="absolute inset-0 [backface-visibility:hidden] overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur"
+    style={{ transform: 'rotateY(180deg)' }}
+  >
+    {/* Preview */}
+    <div className="relative h-48 w-full">
+      <Image
+        src={screenshots[0]}
+        alt={`${title} preview`}
+        fill
+        sizes="380px"
+        className="object-cover cursor-pointer"
+        onClick={() => openLightbox(0)}
+      />
+      <div className="absolute bottom-3 right-3">
+        <button
+          onClick={() => openLightbox(0)}
+          className="px-3 py-1.5 rounded-lg bg-black/55 text-white text-xs hover:bg-black/70 transition"
+        >
+          Open Gallery
+        </button>
       </div>
+    </div>
+              
+            {/* Content, centered */}
+    <div className="px-6 pb-6 pt-8 flex flex-col items-center justify-center text-center min-h-[260px]">
+      <h4 className="text-xl font-semibold mb-3">{title}</h4>
+
+      <p className="text-sm text-neutral-300 max-w-[260px] mb-5">
+        Click “Open Gallery” to view full screenshots.
+      </p>
+
+      <div className="flex items-center gap-3">
+        <a
+          href={codeUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="px-4 py-2 rounded-lg bg-white/10 border border-white/15 text-sm hover:bg-white/20 transition"
+        >
+          View Code
+        </a>
+
+        {/* Hide the BACK-side flip button too when disableFlip */}
+        {!props.disableFlip && (
+          <button
+            onClick={() => setFlipped(false)}
+            aria-label="Flip back"
+            className="grid place-items-center h-9 w-9 rounded-full border border-white/15 bg-white/10 hover:bg-white/20 transition"
+            title="Back"
+          >
+            ↻
+          </button>
+        )}
+      </div>
+    </div>
+  </div>
+)}
+</motion.div>
+</div>
 
       {/* LIGHTBOX */}
       {lightboxOpen && (

@@ -17,7 +17,17 @@ const projects: Project[] = [
     codeUrl: "https://github.com/HenryWinNguyen/momentum-extension",
     storeUrl: '', // paste the store link here when approved
   },
-  // add more projects here later
+  {
+    title: "Multiplication 4-in-a-Row (MIPS)",
+    description:
+      "Turn-based 6×6 multiplication game for the MARS simulator. Implements ASCII UI, slider input, win and tie detection, modular assembly procedures, and a simple AI that evaluates winning moves and validates state.",
+    cover: "/projects/mips_4inarow.jpg", // ← change to .png if your file is PNG
+    screenshots: [],                      // simple tile, no gallery
+    tags: ["MIPS", "Assembly", "MARS", "Algorithms", "Game Dev"],
+    codeUrl: "https://github.com/HenryWinNguyen/MIPS-Assembly-Multplication-Game",
+    disableFlip: true,
+  }, 
+  
 ];
 
 export default function ProjectsShowcase() {
