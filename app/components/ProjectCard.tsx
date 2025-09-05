@@ -101,7 +101,7 @@ export default function ProjectCard(props: Project) {
                   <span className="px-4 py-2 rounded-lg bg-white/10 border border-white/15 text-sm text-neutral-300 cursor-not-allowed">
                     Chrome Store — Pending Review
                   </span>
-                ) : codeUrl ? (
+                ) : (codeUrl && props.disableFlip) ? (
                   <a
                     href={codeUrl}
                     target="_blank"

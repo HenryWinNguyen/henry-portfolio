@@ -27,6 +27,26 @@ const projects: Project[] = [
     codeUrl: "https://github.com/HenryWinNguyen/MIPS-Assembly-Multplication-Game",
     disableFlip: true,
   }, 
+  {
+    title: "Internship Tracker",
+    description:
+      "Full-stack app to manage internship applications with filtering, sorting, and status tracking. Built with TypeScript, Tailwind, and localStorage persistence. Includes responsive design, micro-animations, and planned AI auto-categorization.",
+    cover: "/projects/internship-tracker_cover.png",  // ✅ briefcase icon
+    screenshots: ["/projects/internship-tracker_ss.png"], // ✅ UI screenshot
+    tags: [
+      "Next.js",
+      "REST API",
+      "Framer Motion",
+      "Responsive Design",
+      "AI Integration"
+    ],
+    codeUrl: "https://github.com/HenryWinNguyen/Internship-Tracker",
+    disableFlip: false
+  }, 
+  
+  
+  
+  
   
 ];
 
