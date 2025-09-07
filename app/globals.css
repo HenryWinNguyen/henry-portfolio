@@ -5,6 +5,17 @@
   --foreground: #171717;
 }
 
+@keyframes skills-marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.marquee {
+  animation: skills-marquee 22s linear infinite;
+  will-change: transform;
+}
+
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);

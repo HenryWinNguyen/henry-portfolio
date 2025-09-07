@@ -4,6 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import ProjectsShowcase from "./components/ProjectsShowcase";
+import SkillsMarquee from "./components/SkillsMarquee";
 
 /* ===== Experience data (most recent first) ===== */
 type Exp = {
@@ -289,6 +290,9 @@ export default function Home() {
           </motion.div>
         </motion.div>
       </section>
+
+      {/* ---- SKILLS STRIP ---- */}
+      <SkillsMarquee />
 
       {/* ---- EXPERIENCE CAROUSEL ---- */}
       <ExperienceCarousel />
