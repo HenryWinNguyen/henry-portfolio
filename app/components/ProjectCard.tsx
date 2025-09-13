@@ -11,7 +11,7 @@ export type Project = {
   screenshots: string[];
   tags: string[];
   codeUrl: string;
-  storeUrl?: string;   // if '', we treat as pending; if undefined, we show GitHub
+  storeUrl?: string;   // if '', treat as pending; if defined, can be Chrome Store or Live App
   disableFlip?: boolean;
 };
 
@@ -22,15 +22,12 @@ export default function ProjectCard(props: Project) {
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [idx, setIdx] = useState(0);
 
-  // STEP 1: helper booleans for CTA logic
+  // CTA helpers
   const hasStore = typeof storeUrl === 'string' && storeUrl.length > 0;
   const storePending = storeUrl === '';
+  const isChromeStore = hasStore && /chromewebstore|chrome\.google\.com/.test(storeUrl!);
 
-  const openLightbox = (startIndex = 0) => {
-    setIdx(startIndex);
-    setLightboxOpen(true);
-  };
-
+  const openLightbox = (startIndex = 0) => { setIdx(startIndex); setLightboxOpen(true); };
   const closeLightbox = () => setLightboxOpen(false);
   const next = () => setIdx((i) => (i + 1) % screenshots.length);
   const prev = () => setIdx((i) => (i - 1 + screenshots.length) % screenshots.length);
@@ -68,14 +65,14 @@ export default function ProjectCard(props: Project) {
             </div>
 
             {/* Content */}
-            <div className="px-6 pb-6 pt-5 text-center">
+            <div className="px-6 pb-10 pt-5 text-center">
               <h3 className="text-2xl font-semibold transition-transform duration-200 group-hover:scale-[1.04]">
                 {title}
               </h3>
 
               <p className="mt-3 text-sm text-neutral-300">{description}</p>
 
-              <div className="mt-4 flex flex-wrap justify-center gap-2">
+              <div className="mt-3 flex flex-wrap justify-center gap-2">
                 {tags.map((t) => (
                   <span
                     key={t}
@@ -86,9 +83,34 @@ export default function ProjectCard(props: Project) {
                 ))}
               </div>
 
-              {/* Store + Rotate */}
-              <div className="mt-5 flex items-center justify-center gap-3">
-                {hasStore ? (
+              {/* CTAs + Rotate */}
+              <div className="mt-4 flex flex-wrap items-center justify-center gap-3 gap-y-2">
+                {/* Live app (non–Chrome Store) — e.g., NBA Muse */}
+                {hasStore && !isChromeStore && (
+                  <>
+                    <a
+                      href={storeUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-4 py-2 min-w-[8rem] text-center rounded-lg bg-white/10 border border-white/15 text-sm text-white hover:bg-white/20 transition"
+                    >
+                      Open App
+                    </a>
+                    {codeUrl && (
+                      <a
+                        href={codeUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-4 py-2 min-w-[8rem] text-center rounded-lg bg-white/10 border border-white/15 text-sm text-white hover:bg-white/20 transition"
+                      >
+                        View Code
+                      </a>
+                    )}
+                  </>
+                )}
+
+                {/* Chrome Web Store (Momentum) */}
+                {hasStore && isChromeStore && (
                   <a
                     href={storeUrl}
                     target="_blank"
@@ -97,21 +119,28 @@ export default function ProjectCard(props: Project) {
                   >
                     View on Chrome Web Store
                   </a>
-                ) : storePending ? (
+                )}
+
+                {/* Pending pill */}
+                {!hasStore && storePending && (
                   <span className="px-4 py-2 rounded-lg bg-white/10 border border-white/15 text-sm text-neutral-300 cursor-not-allowed">
                     Chrome Store — Pending Review
                   </span>
-                ) : (codeUrl && props.disableFlip) ? (
+                )}
+
+                {/* Non-flip code-only cards (e.g., MIPS) */}
+                {!hasStore && !storePending && codeUrl && props.disableFlip && (
                   <a
                     href={codeUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="px-4 py-2 rounded-lg bg-white/10 border border-white/15 text-sm text-white hover:bg-white/20 transition"
+                    className="px-4 py-2 min-w-[8rem] text-center rounded-lg bg-white/10 border border-white/15 text-sm text-white hover:bg-white/20 transition"
                   >
                     View on GitHub
                   </a>
-                ) : null}
+                )}
 
+                {/* Flip button (only for flip-enabled cards) */}
                 {!props.disableFlip && (
                   <button
                     aria-label="Flip to screenshots side"
@@ -126,7 +155,7 @@ export default function ProjectCard(props: Project) {
             </div>
           </div>
 
-          {/* BACK: render only when flipping is enabled */}
+          {/* BACK (only when flipping is enabled) */}
           {!props.disableFlip && (
             <div
               className="absolute inset-0 [backface-visibility:hidden] overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur"
@@ -153,7 +182,7 @@ export default function ProjectCard(props: Project) {
               </div>
 
               {/* Content, centered */}
-              <div className="px-6 pb-6 pt-8 flex flex-col items-center justify-center text-center min-h-[260px]">
+              <div className="px-6 pb-8 pt-8 flex flex-col items-center justify-center text-center min-h-[260px]">
                 <h4 className="text-xl font-semibold mb-3">{title}</h4>
 
                 <p className="text-sm text-neutral-300 max-w-[260px] mb-5">
@@ -165,7 +194,7 @@ export default function ProjectCard(props: Project) {
                     href={codeUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="px-4 py-2 rounded-lg bg-white/10 border border-white/15 text-sm hover:bg-white/20 transition"
+                    className="px-4 py-2 min-w-[8rem] text-center rounded-lg bg-white/10 border border-white/15 text-sm hover:bg-white/20 transition"
                   >
                     View Code
                   </a>

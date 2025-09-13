@@ -3,6 +3,7 @@
 import ProjectCard, { Project } from './ProjectCard';
 
 const projects: Project[] = [
+  
   {
     title: 'Momentum Chrome Extension',
     description:
@@ -17,6 +18,21 @@ const projects: Project[] = [
     codeUrl: "https://github.com/HenryWinNguyen/momentum-extension",
     storeUrl: '', // paste the store link here when approved
   },
+
+  {
+    title: "NBA Muse",
+    description:
+      "I used to sports bet a lot, so I built NBA Muse, a personal stats explorer that surfaces any player’s box score data from 1997–2024. It combines a structured data pipeline with a performant Turso backend to deliver instant lookups.",
+    cover: "/projects/nba-muse_cover.png", // make sure this file is inside /public
+    screenshots: [
+      '/public/projects.nba-muse_cover.png',
+    ],
+    tags: ["Turso", "Data Modeling", "Query Optimization", "Data Pipeline"],
+    codeUrl: "https://github.com/HenryWinNguyen/nba-muse",
+    storeUrl: "https://nba-muse.vercel.app/app.html", // we’ll render this as “View App”
+    disableFlip: true,
+  },
+  
   {
     title: "Multiplication 4-in-a-Row (MIPS)",
     description:
