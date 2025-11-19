@@ -43,6 +43,21 @@ const projects: Project[] = [
     codeUrl: "https://github.com/HenryWinNguyen/MIPS-Assembly-Multplication-Game",
     disableFlip: true,
   }, 
+
+  {
+    title: "CloudNotes",
+    description:
+      "A local-first notebook for runnable code snippets. Each note executes Python or JavaScript inside a Docker sandbox, giving fast feedback while studying without polluting my local environment.",
+    cover: "/projects/cloudnotes_cover.png",
+    screenshots: [
+      "/projects/cloudnotes_ss1.png",
+      "/projects/cloudnotes_ss2.png", // remove this line if you only use one screenshot
+    ],
+    tags: ["Docker", "Containers", "Sandboxed Execution", "Dev Tooling"],
+    codeUrl: "https://github.com/HenryWinNguyen/cloudnotes",
+    // no storeUrl and no disableFlip => flip enabled, code button on the *back*
+  },
+  
   {
     title: "Internship Tracker",
     description:
