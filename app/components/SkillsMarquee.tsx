@@ -17,6 +17,7 @@ export default function SkillsMarquee() {
     { label: 'Python', src: '/skills/python.png' },
     { label: 'C/C++', src: '/skills/c-cpp.png' },
     { label: 'Java', src: '/skills/java.png' },
+    { label: 'Docker', src: '/skills/docker.png' },
     { label: 'Git', src: '/skills/git.png' },
   ];
 
