@@ -29,15 +29,32 @@ const projects: Project[] = [
     ],
     tags: ["Turso", "Data Modeling", "Query Optimization", "Data Pipeline"],
     codeUrl: "https://github.com/HenryWinNguyen/nba-muse",
-    storeUrl: "https://nba-muse.vercel.app/app.html", // we’ll render this as “View App”
+    storeUrl: "https://nba-muse.vercel.app/app.html", 
     disableFlip: true,
+  },
+
+  {
+    title: "Smart Shot Coach",
+    description:
+      "A C++ powered basketball analytics engine that evaluates shot selection using spatial data, expected value modeling, and play context to recommend higher efficiency scoring decisions.",
+    cover: "/projects/smart-shot-cover.png",
+    screenshots: [],
+    tags: [
+      "C++",
+      "Algorithms",
+      "Data Structures",
+      "Spatial Analysis",
+    ],
+    codeUrl: "https://github.com/HenryWinNguyen/smart-shot-coach",
+    storeUrl: "https://smart-shot-coach.vercel.app",
+    disableFlip: true
   },
   
   {
     title: "Multiplication 4-in-a-Row (MIPS)",
     description:
       "Turn-based 6×6 multiplication game for the MARS simulator. Implements ASCII UI, slider input, win and tie detection, modular assembly procedures, and a simple AI that evaluates winning moves and validates state.",
-    cover: "/projects/mips_4inarow.jpg", // ← change to .png if your file is PNG
+    cover: "/projects/mips_4inarow.jpg", 
     screenshots: [],                      // simple tile, no gallery
     tags: ["MIPS", "Assembly", "MARS", "Algorithms", "Game Dev"],
     codeUrl: "https://github.com/HenryWinNguyen/MIPS-Assembly-Multplication-Game",
@@ -51,11 +68,10 @@ const projects: Project[] = [
     cover: "/projects/cloudnotes_cover.png",
     screenshots: [
       "/projects/cloudnotes_ss1.png",
-      "/projects/cloudnotes_ss2.png", // remove this line if you only use one screenshot
+      "/projects/cloudnotes_ss2.png", 
     ],
     tags: ["Docker", "Containers", "Sandboxed Execution", "Dev Tooling"],
     codeUrl: "https://github.com/HenryWinNguyen/cloudnotes",
-    // no storeUrl and no disableFlip => flip enabled, code button on the *back*
   },
   
   {
