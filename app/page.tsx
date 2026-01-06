@@ -268,7 +268,7 @@ export default function Home() {
             className="mt-6 flex items-center justify-center gap-4"
           >
             <a
-              href="/resume-2025.pdf" 
+              href="/resume.pdf" 
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center rounded-xl bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 px-5 py-2.5 text-sm font-medium text-white shadow-md transition hover:opacity-90"
