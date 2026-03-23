@@ -59,7 +59,7 @@ const projects: Project[] = [
       '/projects/jobfill_settings.png',
     ],
     tags: ['JavaScript', 'Chrome Extensions API', 'DOM Manipulation', 'Async/Await', 'Reverse Engineering'],
-    codeUrl: '',        // paste GitHub URL when ready
+    codeUrl: 'https://github.com/HenryWinNguyen/JobFill',
     storeUrl: '',       // paste Chrome Web Store URL when ready
   },
   
