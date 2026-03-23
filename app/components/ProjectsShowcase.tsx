@@ -49,6 +49,19 @@ const projects: Project[] = [
     storeUrl: "https://smart-shot-coach.vercel.app",
     disableFlip: true
   },
+
+  {
+    title: 'JobFill',
+    description:
+      'A Chrome extension that automates job application form-filling across Workday, Ashby, and other ATS platforms. Stores your profile locally and resolves 40+ field types across text inputs, dropdowns, and EEO forms.',
+    cover: '/projects/jobfill_cover.png',
+    screenshots: [
+      '/projects/jobfill_settings.png',
+    ],
+    tags: ['JavaScript', 'Chrome Extensions API', 'DOM Manipulation', 'Async/Await', 'Reverse Engineering'],
+    codeUrl: '',        // paste GitHub URL when ready
+    storeUrl: '',       // paste Chrome Web Store URL when ready
+  },
   
   {
     title: "Multiplication 4-in-a-Row (MIPS)",
