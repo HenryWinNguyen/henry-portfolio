@@ -53,12 +53,12 @@ const projects: Project[] = [
   {
     title: 'JobFill',
     description:
-      'A Chrome extension that automates job application form-filling across Workday, Ashby, and other ATS platforms. Stores your profile locally and resolves 40+ field types across text inputs, dropdowns, and EEO forms.',
+    'A Chrome extension that fills in Workday and other similar Job Applications to save you time!',
     cover: '/projects/jobfill_cover.png',
     screenshots: [
       '/projects/jobfill_settings.png',
     ],
-    tags: ['JavaScript', 'Chrome Extensions API', 'DOM Manipulation', 'Async/Await', 'Reverse Engineering'],
+    tags: ['JavaScript', 'DOM Manipulation', 'Async/Await', 'Reverse Engineering'],
     codeUrl: 'https://github.com/HenryWinNguyen/JobFill',
     storeUrl: '',       // paste Chrome Web Store URL when ready
   },
