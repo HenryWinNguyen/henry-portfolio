@@ -7,8 +7,7 @@ const projects: Project[] = [
   {
     title: 'Momentum Chrome Extension',
     description:
-    "A lightweight Google Chrome extension for personal use that keeps simple daily tasks, assignments, and to-dos at your fingertips in the browser. Available on the Chrome Web Store (pending review).",
-  
+      'A lightweight Google Chrome extension for personal use that keeps simple daily tasks, assignments, and to-dos at your fingertips in the browser. Available on the Chrome Web Store.',  
     cover: '/projects/momentum_cover.png',
     screenshots: [
       '/projects/momentum_tasks.png',
@@ -16,7 +15,7 @@ const projects: Project[] = [
     ],
     tags: ['React', 'TypeScript', 'Tailwind', 'Chrome APIs'],
     codeUrl: "https://github.com/HenryWinNguyen/momentum-extension",
-    storeUrl: '', // paste the store link here when approved
+    storeUrl: 'https://chromewebstore.google.com/detail/momentum/ndccoajkpdpckpfaijfbobeodloefjkn',
   },
 
   {
