@@ -52,14 +52,14 @@ const projects: Project[] = [
   {
     title: 'JobFill',
     description:
-    'A Chrome extension that fills in Workday and other similar Job Applications to save you time!',
+    'A Chrome extension that fills in Workday and other similar Job Applications to save you time on Job Applications!',
     cover: '/projects/jobfill_cover.png',
     screenshots: [
       '/projects/jobfill_settings.png',
     ],
     tags: ['JavaScript', 'DOM Manipulation', 'Async/Await', 'Reverse Engineering'],
     codeUrl: 'https://github.com/HenryWinNguyen/JobFill',
-    storeUrl: '',       // paste Chrome Web Store URL when ready
+    storeUrl: 'https://chromewebstore.google.com/detail/jobfill/kopfpgidbllmikfbjbcnknccpjmknmgf',
   },
   
   {
