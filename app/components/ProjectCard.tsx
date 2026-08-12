@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
-import { motion } from 'framer-motion';
 
 export type Project = {
   title: string;
@@ -11,28 +10,35 @@ export type Project = {
   screenshots: string[];
   tags: string[];
   codeUrl: string;
-  storeUrl?: string;   // if '', treat as pending; if defined, can be Chrome Store or Live App
-  disableFlip?: boolean;
+  storeUrl?: string; // '' = pending review; set = Chrome Web Store or a live-app link
 };
+
+const primaryBtn =
+  'inline-flex items-center justify-center rounded-lg bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:opacity-90';
+const secondaryBtn =
+  'inline-flex items-center justify-center rounded-lg border border-white/15 bg-white/5 px-4 py-2 text-sm font-medium text-neutral-100 transition hover:bg-white/10';
+const pendingPill =
+  'inline-flex items-center justify-center rounded-lg border border-dashed border-white/15 px-4 py-2 text-sm text-neutral-400';
 
 export default function ProjectCard(props: Project) {
   const { title, description, cover, screenshots, tags, codeUrl, storeUrl } = props;
 
-  const [flipped, setFlipped] = useState(false);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [idx, setIdx] = useState(0);
 
-  // CTA helpers
+  const hasScreenshots = screenshots.length > 0;
   const hasStore = typeof storeUrl === 'string' && storeUrl.length > 0;
   const storePending = storeUrl === '';
   const isChromeStore = hasStore && /chromewebstore|chrome\.google\.com/.test(storeUrl!);
 
-  const openLightbox = (startIndex = 0) => { setIdx(startIndex); setLightboxOpen(true); };
+  const openLightbox = (startIndex = 0) => {
+    setIdx(startIndex);
+    setLightboxOpen(true);
+  };
   const closeLightbox = () => setLightboxOpen(false);
   const next = () => setIdx((i) => (i + 1) % screenshots.length);
   const prev = () => setIdx((i) => (i - 1 + screenshots.length) % screenshots.length);
 
-  // keyboard shortcuts for lightbox
   useEffect(() => {
     if (!lightboxOpen) return;
     const onKey = (e: KeyboardEvent) => {
@@ -47,171 +53,82 @@ export default function ProjectCard(props: Project) {
   return (
     <>
       {/* CARD */}
-      <div
-        className="group relative h-[520px] w-full max-w-[380px] transition-transform duration-300 hover:scale-[1.03]"
-        style={{ perspective: '1200px' }}
-      >
-        <motion.div
-          className="absolute inset-0 [transform-style:preserve-3d] rounded-2xl"
-          animate={{ rotateY: props.disableFlip ? 0 : (flipped ? 180 : 0) }}
-          transition={{ duration: 0.6, ease: 'easeInOut' }}
-        >
-          {/* FRONT */}
-          <div className="absolute inset-0 [backface-visibility:hidden] overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur">
-            {/* Cover */}
-            <div className="relative h-48 w-full">
-              <Image src={cover} alt={`${title} cover`} fill sizes="380px" className="object-cover" priority />
-              <div className="absolute inset-0 bg-gradient-to-b from-black/15 to-transparent" />
-            </div>
+      <div className="group flex h-full w-full max-w-[380px] flex-col overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur transition-all duration-300 hover:-translate-y-1 hover:border-white/20">
+        {/* Cover — 5 of the 7 project images are exactly square (checked the actual
+           files), so a square box + object-cover fills edge to edge with zero crop for
+           those, and only a mild crop for the two non-square outliers — much closer to
+           lossless than forcing every image into a wide banner strip. */}
+        <div className="relative aspect-square w-full shrink-0 overflow-hidden">
+          <Image
+            src={cover}
+            alt={`${title} cover`}
+            fill
+            sizes="380px"
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
+            priority
+          />
 
-            {/* Content */}
-            <div className="px-6 pb-10 pt-5 text-center">
-              <h3 className="text-2xl font-semibold transition-transform duration-200 group-hover:scale-[1.04]">
-                {title}
-              </h3>
+          {hasScreenshots && (
+            <button
+              onClick={() => openLightbox(0)}
+              aria-label="View screenshots"
+              title="View screenshots"
+              className="absolute bottom-3 right-3 grid h-9 w-9 place-items-center rounded-full border border-white/20 bg-black/50 text-white backdrop-blur transition hover:bg-black/70"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <rect x="3" y="3" width="14" height="14" rx="2" />
+                <path d="M7 21h11a2 2 0 0 0 2-2V7" />
+              </svg>
+            </button>
+          )}
+        </div>
 
-              <p className="mt-3 text-sm text-neutral-300">{description}</p>
-
-              <div className="mt-3 flex flex-wrap justify-center gap-2">
-                {tags.map((t) => (
-                  <span
-                    key={t}
-                    className="px-2.5 py-1 rounded-full text-xs font-medium bg-yellow-100/20 text-yellow-200 border border-yellow-200/30"
-                  >
-                    {t}
-                  </span>
-                ))}
-              </div>
-
-              {/* CTAs + Rotate */}
-              <div className="mt-4 flex flex-wrap items-center justify-center gap-3 gap-y-2">
-                {/* Live app (non–Chrome Store) — e.g., NBA Muse */}
-                {hasStore && !isChromeStore && (
-                  <>
-                    <a
-                      href={storeUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="px-4 py-2 min-w-[8rem] text-center rounded-lg bg-white/10 border border-white/15 text-sm text-white hover:bg-white/20 transition"
-                    >
-                      Open App
-                    </a>
-                    {codeUrl && (
-                      <a
-                        href={codeUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="px-4 py-2 min-w-[8rem] text-center rounded-lg bg-white/10 border border-white/15 text-sm text-white hover:bg-white/20 transition"
-                      >
-                        View Code
-                      </a>
-                    )}
-                  </>
-                )}
-
-                {/* Chrome Web Store (Momentum) */}
-                {hasStore && isChromeStore && (
-                  <a
-                    href={storeUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="px-4 py-2 rounded-lg bg-yellow-400 text-black text-sm font-semibold hover:bg-yellow-300 transition"
-                  >
-                    View on Chrome Web Store
-                  </a>
-                )}
-
-                {/* Pending pill */}
-                {!hasStore && storePending && (
-                  <span className="px-4 py-2 rounded-lg bg-white/10 border border-white/15 text-sm text-neutral-300 cursor-not-allowed">
-                    Chrome Store — Pending Review
-                  </span>
-                )}
-
-                {/* Non-flip code-only cards (e.g., MIPS) */}
-                {!hasStore && !storePending && codeUrl && props.disableFlip && (
-                  <a
-                    href={codeUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="px-4 py-2 min-w-[8rem] text-center rounded-lg bg-white/10 border border-white/15 text-sm text-white hover:bg-white/20 transition"
-                  >
-                    View on GitHub
-                  </a>
-                )}
-
-                {/* Flip button (only for flip-enabled cards) */}
-                {!props.disableFlip && (
-                  <button
-                    aria-label="Flip to screenshots side"
-                    onClick={() => setFlipped(true)}
-                    className="grid place-items-center h-9 w-9 rounded-full border border-white/15 bg-white/10 hover:bg-white/20 transition"
-                    title="View screenshots"
-                  >
-                    ↻
-                  </button>
-                )}
-              </div>
-            </div>
+        {/* Content */}
+        <div className="flex flex-1 flex-col gap-3 px-6 py-6">
+          <div>
+            <h3 className="text-xl font-semibold text-neutral-50">{title}</h3>
+            <p className="mt-2 text-sm leading-relaxed text-neutral-300 line-clamp-3">{description}</p>
           </div>
 
-          {/* BACK (only when flipping is enabled) */}
-          {!props.disableFlip && (
-            <div
-              className="absolute inset-0 [backface-visibility:hidden] overflow-hidden rounded-2xl border border-white/10 bg-white/5 backdrop-blur"
-              style={{ transform: 'rotateY(180deg)' }}
-            >
-              {/* Preview */}
-              <div className="relative h-48 w-full">
-                <Image
-                  src={screenshots[0]}
-                  alt={`${title} preview`}
-                  fill
-                  sizes="380px"
-                  className="object-cover cursor-pointer"
-                  onClick={() => openLightbox(0)}
-                />
-                <div className="absolute bottom-3 right-3">
-                  <button
-                    onClick={() => openLightbox(0)}
-                    className="px-3 py-1.5 rounded-lg bg-black/55 text-white text-xs hover:bg-black/70 transition"
-                  >
-                    Open Gallery
-                  </button>
-                </div>
-              </div>
-
-              {/* Content, centered */}
-              <div className="px-6 pb-8 pt-8 flex flex-col items-center justify-center text-center min-h-[260px]">
-                <h4 className="text-xl font-semibold mb-3">{title}</h4>
-
-                <p className="text-sm text-neutral-300 max-w-[260px] mb-5">
-                  Click “Open Gallery” to view full screenshots.
-                </p>
-
-                <div className="flex items-center gap-3">
-                  <a
-                    href={codeUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="px-4 py-2 min-w-[8rem] text-center rounded-lg bg-white/10 border border-white/15 text-sm hover:bg-white/20 transition"
-                  >
-                    View Code
-                  </a>
-
-                  <button
-                    onClick={() => setFlipped(false)}
-                    aria-label="Flip back"
-                    className="grid place-items-center h-9 w-9 rounded-full border border-white/15 bg-white/10 hover:bg-white/20 transition"
-                    title="Back"
-                  >
-                    ↻
-                  </button>
-                </div>
-              </div>
+          {tags.length > 0 && (
+            <div className="flex flex-wrap gap-x-3 gap-y-1.5">
+              {tags.map((t) => (
+                <span key={t} className="text-[11px] font-medium uppercase tracking-wide text-neutral-500">
+                  {t}
+                </span>
+              ))}
             </div>
           )}
-        </motion.div>
+
+          {/* CTAs, pinned to the bottom regardless of description/tag length */}
+          <div className="mt-auto flex flex-wrap items-center gap-3 pt-2">
+            {isChromeStore && (
+              <a href={storeUrl} target="_blank" rel="noopener noreferrer" className={primaryBtn}>
+                View on Chrome Web Store
+              </a>
+            )}
+
+            {hasStore && !isChromeStore && (
+              <a href={storeUrl} target="_blank" rel="noopener noreferrer" className={primaryBtn}>
+                Open app
+              </a>
+            )}
+
+            {!hasStore && storePending && <span className={pendingPill}>Chrome Store, pending review</span>}
+
+            {!hasStore && !storePending && codeUrl && (
+              <a href={codeUrl} target="_blank" rel="noopener noreferrer" className={primaryBtn}>
+                View code
+              </a>
+            )}
+
+            {(hasStore || storePending) && codeUrl && (
+              <a href={codeUrl} target="_blank" rel="noopener noreferrer" className={secondaryBtn}>
+                View code
+              </a>
+            )}
+          </div>
+        </div>
       </div>
 
       {/* LIGHTBOX */}
@@ -238,7 +155,6 @@ export default function ProjectCard(props: Project) {
                 />
               </div>
 
-              {/* arrows */}
               {screenshots.length > 1 && (
                 <>
                   <button
@@ -258,17 +174,15 @@ export default function ProjectCard(props: Project) {
                 </>
               )}
 
-              {/* dots */}
               <div className="mt-4 flex justify-center gap-2">
                 {screenshots.map((_, i) => (
                   <span
                     key={i}
-                    className={`h-2.5 w-2.5 rounded-full ${i === idx ? 'bg-yellow-400' : 'bg-white/40'}`}
+                    className={`h-2.5 w-2.5 rounded-full ${i === idx ? 'bg-purple-400' : 'bg-white/40'}`}
                   />
                 ))}
               </div>
 
-              {/* close */}
               <div className="absolute -top-4 right-0">
                 <button
                   onClick={closeLightbox}

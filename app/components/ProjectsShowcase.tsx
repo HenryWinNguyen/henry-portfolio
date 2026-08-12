@@ -7,7 +7,7 @@ const projects: Project[] = [
   {
     title: 'Momentum Chrome Extension',
     description:
-      'A lightweight Google Chrome extension for personal use that keeps simple daily tasks, assignments, and to-dos at your fingertips in the browser. Available on the Chrome Web Store.',  
+      'A lightweight Chrome extension that keeps daily tasks, assignments, and to-dos at your fingertips in the browser.',
     cover: '/projects/momentum_cover.png',
     screenshots: [
       '/projects/momentum_tasks.png',
@@ -21,21 +21,18 @@ const projects: Project[] = [
   {
     title: "NBA Muse",
     description:
-      "I used to sports bet a lot, so I built NBA Muse, a personal stats explorer that surfaces any player’s box score data from 1997–2024. It combines a structured data pipeline with a performant Turso backend to deliver instant lookups.",
-    cover: "/projects/nba-muse_cover.png", // make sure this file is inside /public
-    screenshots: [
-      '/public/projects.nba-muse_cover.png',
-    ],
+      "I used to sports bet a lot, so I built a stats explorer for any NBA player's box score data from 1997–2024, backed by Turso.",
+    cover: "/projects/nba-muse_cover.png",
+    screenshots: [],
     tags: ["Turso", "Data Modeling", "Query Optimization", "Data Pipeline"],
     codeUrl: "https://github.com/HenryWinNguyen/nba-muse",
-    storeUrl: "https://nba-muse.vercel.app/app.html", 
-    disableFlip: true,
+    storeUrl: "https://nba-muse.vercel.app/app.html",
   },
 
   {
     title: "Smart Shot Coach",
     description:
-      "A C++ powered basketball analytics engine that evaluates shot selection using spatial data, expected value modeling, and play context to recommend higher efficiency scoring decisions.",
+      "A C++ analytics engine that evaluates basketball shot selection using spatial data and expected value modeling.",
     cover: "/projects/smart-shot-cover.png",
     screenshots: [],
     tags: [
@@ -46,13 +43,12 @@ const projects: Project[] = [
     ],
     codeUrl: "https://github.com/HenryWinNguyen/smart-shot-coach",
     storeUrl: "https://smart-shot-coach.vercel.app",
-    disableFlip: true
   },
 
   {
     title: 'JobFill',
     description:
-    'A Chrome extension that fills in Workday and other similar Job Applications to save you time on Job Applications!',
+    'A Chrome extension that auto-fills Workday and similar job application forms to save you time.',
     cover: '/projects/jobfill_cover.png',
     screenshots: [
       '/projects/jobfill_settings.png',
@@ -65,18 +61,17 @@ const projects: Project[] = [
   {
     title: "Multiplication 4-in-a-Row (MIPS)",
     description:
-      "Turn-based 6×6 multiplication game for the MARS simulator. Implements ASCII UI, slider input, win and tie detection, modular assembly procedures, and a simple AI that evaluates winning moves and validates state.",
-    cover: "/projects/mips_4inarow.jpg", 
-    screenshots: [],                      // simple tile, no gallery
-    tags: ["MIPS", "Assembly", "MARS", "Algorithms", "Game Dev"],
+      "A turn-based 6×6 multiplication game for the MARS simulator, with an ASCII UI and a simple AI opponent.",
+    cover: "/projects/mips_4inarow.jpg",
+    screenshots: [],
+    tags: ["MIPS", "Assembly", "Computer Architecture", "Low-Level Programming"],
     codeUrl: "https://github.com/HenryWinNguyen/MIPS-Assembly-Multplication-Game",
-    disableFlip: true,
-  }, 
+  },
 
   {
     title: "CloudNotes",
     description:
-      "A local-first notebook for runnable code snippets. Each note executes Python or JavaScript inside a Docker sandbox, giving fast feedback while studying without polluting my local environment.",
+      "A local-first notebook for runnable code snippets, executing Python or JavaScript inside an isolated Docker sandbox.",
     cover: "/projects/cloudnotes_cover.png",
     screenshots: [
       "/projects/cloudnotes_ss1.png",
@@ -89,19 +84,17 @@ const projects: Project[] = [
   {
     title: "Internship Tracker",
     description:
-      "Full-stack app to manage internship applications with filtering, sorting, and status tracking. Built with TypeScript, Tailwind, and localStorage persistence. Includes responsive design, micro-animations, and planned AI auto-categorization.",
-    cover: "/projects/internship-tracker_cover.png",  // ✅ briefcase icon
-    screenshots: ["/projects/internship-tracker_ss.png"], // ✅ UI screenshot
+      "Full-stack app to manage internship applications, with filtering, sorting, status tracking, and micro-animations.",
+    cover: "/projects/internship-tracker_cover.png",
+    screenshots: ["/projects/internship-tracker_ss.png"],
     tags: [
       "Next.js",
       "REST API",
       "Framer Motion",
       "Responsive Design",
-      "AI Integration"
     ],
     codeUrl: "https://github.com/HenryWinNguyen/Internship-Tracker",
-    disableFlip: false
-  }, 
+  },
   
   
   
