@@ -3,7 +3,18 @@
 import ProjectCard, { Project } from './ProjectCard';
 
 const projects: Project[] = [
-  
+
+  {
+    title: 'Sentry Load',
+    description:
+      'A distributed load-testing platform: Go coordinator and workers fanning out over Redis Streams across two real cloud regions.',
+    cover: '/projects/sentry-load_cover.svg',
+    screenshots: [],
+    tags: ['Go', 'Redis Streams', 'Distributed Systems', 'WebSocket'],
+    codeUrl: 'https://github.com/HenryWinNguyen/sentry-load',
+    storeUrl: 'https://sentry-load.vercel.app',
+  },
+
   {
     title: 'Momentum Chrome Extension',
     description:
