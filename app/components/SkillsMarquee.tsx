@@ -1,45 +1,51 @@
 'use client';
 
 import Image from "next/image";
+import { motion } from "framer-motion";
 
 type Item = { label: string; src: string };
 
-export default function SkillsMarquee() {
-  // Updated skills list
-  const items: Item[] = [
-    { label: 'TypeScript', src: '/skills/typescript.png' },
-    { label: 'React', src: '/skills/react.png' },
-    { label: 'Next.js', src: '/skills/nextjs.png' },
-    { label: 'Node.js', src: '/skills/nodejs.png' },
-    { label: 'PostgreSQL', src: '/skills/postgresql.png' },
-    { label: 'Tailwind CSS', src: '/skills/tailwind.png' },
-    { label: 'Framer Motion', src: '/skills/framer.png' },
-    { label: 'Python', src: '/skills/python.png' },
-    { label: 'C/C++', src: '/skills/c-cpp.png' },
-    { label: 'Java', src: '/skills/java.png' },
-    { label: 'Docker', src: '/skills/docker.png' },
-    { label: 'Git', src: '/skills/git.png' },
-  ];
+export const skillItems: Item[] = [
+  { label: 'TypeScript', src: '/skills/typescript.png' },
+  { label: 'React', src: '/skills/react.png' },
+  { label: 'Next.js', src: '/skills/nextjs.png' },
+  { label: 'Node.js', src: '/skills/nodejs.png' },
+  { label: 'PostgreSQL', src: '/skills/postgresql.png' },
+  { label: 'Tailwind CSS', src: '/skills/tailwind.png' },
+  { label: 'Framer Motion', src: '/skills/framer.png' },
+  { label: 'Python', src: '/skills/python.png' },
+  { label: 'C/C++', src: '/skills/c-cpp.png' },
+  { label: 'Java', src: '/skills/java.png' },
+  { label: 'Docker', src: '/skills/docker.png' },
+  { label: 'Git', src: '/skills/git.png' },
+];
 
-  const loop = [...items, ...items];
+export default function SkillsMarquee() {
+  const loop = [...skillItems, ...skillItems];
 
   return (
-    <section aria-label="Technical Skills" className="relative isolate py-14">
-      {/* Background glow */}
-      <div className="pointer-events-none absolute inset-0 -z-10 blur-3xl">
-        <div className="mx-auto h-48 w-[90%] rounded-full bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-pink-500/20" />
-      </div>
-
+    <motion.section
+      aria-label="Technical Skills"
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-80px" }}
+      transition={{ duration: 0.6, ease: "easeOut" }}
+      className="relative isolate py-14"
+    >
       <div className="mx-auto max-w-6xl px-4">
-        <h2 className="mb-8 text-center text-4xl font-extrabold tracking-tight bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+        <p className="mb-3 text-center text-xs font-semibold uppercase tracking-[0.2em] text-accent">
+          Toolkit
+        </p>
+        <h2 className="mb-8 text-center text-4xl font-semibold tracking-tight text-ink">
           Technical Skills
         </h2>
 
-        {/* Glassy marquee container */}
-        <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-white/5 pt-5 pb-7 px-5 shadow-lg backdrop-blur">
-          {/* gradient fades on edges */}
-          <div className="pointer-events-none absolute left-0 top-0 h-full w-24 bg-gradient-to-r from-black to-transparent" />
-          <div className="pointer-events-none absolute right-0 top-0 h-full w-24 bg-gradient-to-l from-black to-transparent" />
+        {/* Marquee container */}
+        <div className="relative overflow-hidden rounded-2xl border border-border bg-surface-elevated pt-5 pb-7 px-5 shadow-card">
+          <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-accent/60 to-transparent" />
+          {/* fades on edges */}
+          <div className="pointer-events-none absolute left-0 top-0 h-full w-24 bg-gradient-to-r from-surface-elevated to-transparent" />
+          <div className="pointer-events-none absolute right-0 top-0 h-full w-24 bg-gradient-to-l from-surface-elevated to-transparent" />
 
           {/* Scrolling track */}
           <div className="marquee flex w-max items-center gap-6 hover:[animation-play-state:paused]">
@@ -49,14 +55,14 @@ export default function SkillsMarquee() {
           </div>
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 }
 
 function LogoPill({ item }: { item: Item }) {
     return (
       <div
-        className="group relative flex items-center justify-center rounded-xl border border-white/10 bg-white/10 p-3 shadow-md backdrop-blur transition hover:bg-white/20 hover:scale-105"
+        className="group relative flex items-center justify-center rounded-xl border border-border bg-surface p-3 transition hover:border-border-hover hover:bg-surface-elevated-hover"
         aria-label={item.label}
       >
         {/* Full-color logo (no grayscale) */}

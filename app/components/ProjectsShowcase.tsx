@@ -1,18 +1,20 @@
 'use client';
 
+import { motion } from 'framer-motion';
 import ProjectCard, { Project } from './ProjectCard';
 
-const projects: Project[] = [
+export const projects: Project[] = [
 
   {
     title: 'Sentry Load',
     description:
-      'A distributed load-testing platform: Go coordinator and workers fanning out over Redis Streams across two real cloud regions.',
+      'A distributed load-testing platform in Go coordinating a multi-region worker fleet over Redis Streams, with Prometheus/Grafana observability and capacity-aware admission control that cut failed test runs by 40%.',
     cover: '/projects/sentry-load_cover.svg',
     screenshots: [],
-    tags: ['Go', 'Redis Streams', 'Distributed Systems', 'WebSocket'],
+    tags: ['Go', 'Redis Streams', 'Prometheus/Grafana', 'Docker'],
     codeUrl: 'https://github.com/HenryWinNguyen/sentry-load',
     storeUrl: 'https://sentry-load.vercel.app',
+    featured: true,
   },
 
   {
@@ -61,6 +63,7 @@ const projects: Project[] = [
     description:
     'A Chrome extension that auto-fills Workday and similar job application forms to save you time.',
     cover: '/projects/jobfill_cover.png',
+    coverFit: 'contain',
     screenshots: [
       '/projects/jobfill_settings.png',
     ],
@@ -74,6 +77,7 @@ const projects: Project[] = [
     description:
       "A turn-based 6×6 multiplication game for the MARS simulator, with an ASCII UI and a simple AI opponent.",
     cover: "/projects/mips_4inarow.jpg",
+    coverFit: 'contain',
     screenshots: [],
     tags: ["MIPS", "Assembly", "Computer Architecture", "Low-Level Programming"],
     codeUrl: "https://github.com/HenryWinNguyen/MIPS-Assembly-Multplication-Game",
@@ -117,21 +121,38 @@ export default function ProjectsShowcase() {
   const single = projects.length === 1;
 
   return (
-    <section id="projects" className="relative z-10 mx-auto max-w-6xl px-4 py-24 border-t border-white/10">
-      <h2 className="mb-10 text-center text-4xl font-extrabold tracking-tight">
-        <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-          My Projects
-        </span>
+    <motion.section
+      id="projects"
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-80px" }}
+      transition={{ duration: 0.6, ease: "easeOut" }}
+      className="relative z-10 mx-auto max-w-6xl px-4 py-24"
+    >
+      <p className="mb-3 text-center text-xs font-semibold uppercase tracking-[0.2em] text-accent">
+        Selected Work
+      </p>
+      <h2 className="mb-10 text-center text-4xl font-semibold tracking-tight text-ink">
+        My Projects
       </h2>
 
       {/* Center if one; grid to 3 across when many */}
       <div className={single
         ? 'flex justify-center'
         : 'grid gap-8 sm:grid-cols-2 lg:grid-cols-3 justify-items-center'}>
-        {projects.map((p) => (
-          <ProjectCard key={p.title} {...p} />
+        {projects.map((p, idx) => (
+          <motion.div
+            key={p.title}
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-60px" }}
+            transition={{ duration: 0.5, ease: "easeOut", delay: (idx % 3) * 0.08 }}
+            className="w-full max-w-[380px]"
+          >
+            <ProjectCard {...p} />
+          </motion.div>
         ))}
       </div>
-    </section>
+    </motion.section>
   );
 }

@@ -1,10 +1,10 @@
 'use client';
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Image from "next/image";
-import { motion } from "framer-motion";
-import ProjectsShowcase from "./components/ProjectsShowcase";
-import SkillsMarquee from "./components/SkillsMarquee";
+import { motion, useScroll, useSpring, useTransform } from "framer-motion";
+import ProjectsShowcase, { projects } from "./components/ProjectsShowcase";
+import SkillsMarquee, { skillItems } from "./components/SkillsMarquee";
 
 /* ===== Experience data (most recent first) ===== */
 type Exp = {
@@ -20,9 +20,20 @@ type Exp = {
 
 const experiences: Exp[] = [
   {
+    company: "Spectrum",
+    role: "Software Engineer Intern",
+    period: "May 2026 – Aug 2026",
+    location: "Greenwood Village, CO",
+    logo: "/spectrum.png",
+    summary:
+      "Built a RAG-based semantic search pipeline using vector embeddings and OpenSearch, cutting search times by 30%. Deployed a distributed Kubernetes service batching LLM calls through an OpenAI gateway, cutting token costs by 50%. Redesigned Spectrum's internal API gateway with GraphQL and Datadog observability, improving latency by 35%.",
+    tech: ["RAG", "OpenSearch", "Kubernetes", "GraphQL", "Datadog"],
+    logoScale: 1,
+  },
+  {
     company: "Imagine Communications",
     role: "IT Specialist Intern",
-    period: "Jan 2025 – Present",
+    period: "Jan 2025 – May 2026",
     location: "Plano, TX",
     logo: "/imagine-communications.png",
     summary:
@@ -65,11 +76,66 @@ const experiences: Exp[] = [
   },
 ];
 
-/* ===== Simple fade animation ===== */
+/* ===== Motion presets ===== */
 const fadeUp = {
   initial: { opacity: 0, y: 20 },
   animate: { opacity: 1, y: 0 },
 };
+
+const reveal = {
+  initial: { opacity: 0, y: 24 },
+  whileInView: { opacity: 1, y: 0 },
+  viewport: { once: true, margin: "-80px" },
+  transition: { duration: 0.6, ease: "easeOut" as const },
+};
+
+const primaryBtn =
+  "inline-flex items-center justify-center rounded-lg bg-accent px-5 py-2.5 text-sm font-medium text-[var(--color-accent-ink)] transition hover:brightness-110";
+const secondaryBtn =
+  "inline-flex items-center justify-center rounded-lg border border-border bg-transparent px-5 py-2.5 text-sm font-medium text-ink transition hover:bg-surface-elevated hover:border-border-hover";
+
+/* ===== Thin top scroll-progress bar ===== */
+function ScrollProgressBar() {
+  const { scrollYProgress } = useScroll();
+  const scaleX = useSpring(scrollYProgress, {
+    stiffness: 120,
+    damping: 24,
+    restDelta: 0.001,
+  });
+  return (
+    <motion.div
+      style={{ scaleX }}
+      className="fixed inset-x-0 top-0 z-50 h-[2px] origin-left bg-accent"
+    />
+  );
+}
+
+/* ===== Header that gains a background once you scroll past the hero ===== */
+function Header() {
+  const { scrollY } = useScroll();
+  const bgOpacity = useTransform(scrollY, [0, 120], [0, 1]);
+
+  return (
+    <header className="sticky top-0 z-40">
+      <motion.div
+        style={{ opacity: bgOpacity }}
+        className="absolute inset-0 border-b border-border bg-surface/85 backdrop-blur-md"
+      />
+      <nav className="relative mx-auto flex max-w-6xl items-center justify-between p-4">
+        <span className="flex items-center gap-2 text-base font-medium tracking-tight">
+          <span className="h-1.5 w-1.5 rounded-full bg-accent" aria-hidden />
+          Henry Nguyen
+        </span>
+        <ul className="hidden items-center gap-8 text-sm text-ink-muted sm:flex">
+          <li><a href="#about" className="transition hover:text-ink">About</a></li>
+          <li><a href="#projects" className="transition hover:text-ink">Projects</a></li>
+          <li><a href="#experience" className="transition hover:text-ink">Experience</a></li>
+          <li><a href="#contact" className="transition hover:text-ink">Contact</a></li>
+        </ul>
+      </nav>
+    </header>
+  );
+}
 
 /* ===== Experience Carousel ===== */
 function ExperienceCarousel() {
@@ -79,21 +145,27 @@ function ExperienceCarousel() {
   const canNext = i < experiences.length - 1;
 
   return (
-    <section id="experience" className="relative z-10 mx-auto max-w-6xl px-4 py-24 border-t border-white/10">
-      <h2 className="mb-10 text-center text-4xl font-extrabold tracking-tight">
-        <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-          Experience
-        </span>
+    <motion.section
+      {...reveal}
+      id="experience"
+      className="relative z-10 mx-auto max-w-6xl px-4 py-24"
+    >
+      <p className="mb-3 text-center text-xs font-semibold uppercase tracking-[0.2em] text-accent">
+        Work
+      </p>
+      <h2 className="mb-10 text-center text-4xl font-semibold tracking-tight text-ink">
+        Experience
       </h2>
 
-      <div className="relative overflow-hidden rounded-2xl bg-white/5 p-6 backdrop-blur">
+      <div className="relative overflow-hidden rounded-2xl border border-border bg-surface-elevated p-6 shadow-card">
+        <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-accent/60 to-transparent" />
         {/* Left arrow */}
         <button
           onClick={() => canPrev && setI((v) => v - 1)}
-          className={`group absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/10 backdrop-blur transition hover:bg-white/20 ${canPrev ? "" : "opacity-30 pointer-events-none"}`}
+          className={`absolute left-3 sm:left-4 top-1/2 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full border border-border bg-surface transition hover:border-border-hover hover:bg-surface-elevated-hover ${canPrev ? "" : "opacity-30 pointer-events-none"}`}
           aria-label="Previous experience"
         >
-          <svg width="20" height="20" viewBox="0 0 24 24" className="text-white">
+          <svg width="20" height="20" viewBox="0 0 24 24" className="text-ink">
             <path fill="currentColor" d="M14.7 17.3L10.4 13l4.3-4.3-1.4-1.4L7.6 13l5.7 5.7z"/>
           </svg>
         </button>
@@ -101,10 +173,10 @@ function ExperienceCarousel() {
         {/* Right arrow */}
         <button
           onClick={() => canNext && setI((v) => v + 1)}
-          className={`group absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/10 backdrop-blur transition hover:bg-white/20 ${canNext ? "" : "opacity-30 pointer-events-none"}`}
+          className={`absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 flex h-10 w-10 items-center justify-center rounded-full border border-border bg-surface transition hover:border-border-hover hover:bg-surface-elevated-hover ${canNext ? "" : "opacity-30 pointer-events-none"}`}
           aria-label="Next experience"
         >
-          <svg width="20" height="20" viewBox="0 0 24 24" className="text-white">
+          <svg width="20" height="20" viewBox="0 0 24 24" className="text-ink">
             <path fill="currentColor" d="M9.3 6.7L13.6 11l-4.3 4.3 1.4 1.4L16.4 11 10.7 5.3z"/>
           </svg>
         </button>
@@ -134,23 +206,23 @@ function ExperienceCarousel() {
             {/* Text */}
             <div>
               <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-                <h3 className="text-3xl font-bold">{exp.company}</h3>
-                <span className="text-neutral-400">•</span>
-                <p className="text-neutral-300">{exp.role}</p>
+                <h3 className="text-3xl font-semibold text-ink">{exp.company}</h3>
+                <span className="text-ink-faint">•</span>
+                <p className="text-ink-muted">{exp.role}</p>
               </div>
-              <p className="mt-1 text-neutral-400">
+              <p className="mt-1 text-ink-faint">
                 {exp.period}{exp.location ? ` · ${exp.location}` : ""}
               </p>
 
-              <p className="mt-4 text-neutral-200 leading-relaxed">{exp.summary}</p>
+              <p className="mt-4 text-ink-muted leading-relaxed">{exp.summary}</p>
 
               {exp.tech && exp.tech.length > 0 && (
                 <div className="mt-5 flex flex-wrap items-center gap-2">
-                  <span className="text-neutral-300 font-medium mr-1">Tech:</span>
+                  <span className="text-ink-muted font-medium mr-1">Tech:</span>
                   {exp.tech.map((t) => (
                     <span
                       key={t}
-                      className="rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs text-neutral-100"
+                      className="rounded-full border border-border px-3 py-1 text-xs text-ink-muted"
                     >
                       {t}
                     </span>
@@ -160,101 +232,90 @@ function ExperienceCarousel() {
             </div>
           </div>
 
-          <div className="mt-6 text-center text-sm text-neutral-400">
-            {i + 1} / {experiences.length}
+          <div className="mt-6 flex items-center justify-center gap-1.5">
+            {experiences.map((_, dotIdx) => (
+              <span
+                key={dotIdx}
+                className={`h-1.5 rounded-full transition-all ${
+                  dotIdx === i ? "w-5 bg-accent" : "w-1.5 bg-border-hover"
+                }`}
+              />
+            ))}
           </div>
         </motion.div>
       </div>
-    </section>
+    </motion.section>
   );
 }
 
-
 export default function Home() {
+  const heroRef = useRef<HTMLElement | null>(null);
+  const { scrollYProgress: heroProgress } = useScroll({
+    target: heroRef,
+    offset: ["start start", "end start"],
+  });
+  const portraitY = useTransform(heroProgress, [0, 1], [0, 40]);
+
   return (
-    <main className="relative min-h-screen overflow-hidden bg-neutral-950 text-neutral-100">
-      {/* ---- Page Backdrop (fixed) ---- */}
-      <div aria-hidden className="pointer-events-none fixed inset-0 z-0">
-        {/* base matte */}
-        <div className="absolute inset-0 bg-neutral-950" />
-
-        {/* HERO BAND (top ~72vh) */}
-        <div className="absolute inset-x-0 top-0 h-[72vh]">
-          <div className="absolute inset-0 bg-gradient-to-b from-neutral-800 via-neutral-900 to-transparent" />
-          <div
-            className="absolute inset-0 blur-2xl opacity-80"
-            style={{
-              backgroundImage:
-                "radial-gradient(680px 360px at 50% 18%, rgba(59,130,246,0.35), transparent 60%), radial-gradient(520px 280px at 18% 58%, rgba(168,85,247,0.28), transparent 60%), radial-gradient(520px 260px at 82% 52%, rgba(236,72,153,0.24), transparent 60%)",
-            }}
-          />
-          <div
-            className="absolute inset-0 opacity-45"
-            style={{
-              backgroundImage:
-                "linear-gradient(to right, rgba(255,255,255,0.06) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.06) 1px, transparent 1px)",
-              backgroundSize: "30px 30px",
-            }}
-          />
-        </div>
-
-
-
-        {/* BODY depth */}
-        <div className="absolute inset-x-0 bottom-0 h-[55vh] bg-[linear-gradient(to_bottom,transparent,rgba(18,18,18,0.40))]" />
-      </div>
+    <main className="relative min-h-screen bg-surface text-ink">
+      <ScrollProgressBar />
 
       {/* ---- Top bar ---- */}
-      <header className="sticky top-0 z-10 border-b border-white/10 bg-neutral-950/60 backdrop-blur-sm">
-        <nav className="mx-auto flex max-w-6xl items-center justify-between p-4">
-          <span className="text-base font-semibold tracking-tight">Henry Nguyen</span>
-          <ul className="hidden items-center gap-6 text-sm text-neutral-300 sm:flex">
-            <li><a href="#about" className="hover:text-white">About</a></li>
-            <li><a href="#projects" className="hover:text-white">Projects</a></li>
-            <li><a href="#experience" className="hover:text-white">Experience</a></li>
-            <li><a href="#contact" className="hover:text-white">Contact</a></li>
-          </ul>
-        </nav>
-      </header>
+      <Header />
 
       {/* ---- HERO ---- */}
-      <section id="about" className="relative z-10 mx-auto max-w-4xl px-4 pt-28 sm:pt-36 pb-16 sm:pb-20 text-center">
-        {/* portrait */}
+      <section
+        ref={heroRef}
+        id="about"
+        className="relative mx-auto max-w-4xl px-4 pt-24 sm:pt-32 pb-20 sm:pb-24 text-center"
+      >
+        {/* Ambient glow — a single soft accent light, not a rainbow blob field */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 -top-24 -z-10 flex justify-center"
+        >
+          <div className="h-[420px] w-[420px] rounded-full bg-accent/[0.20] blur-[110px]" />
+        </div>
+
+        {/* portrait — a true circle, sized moderately */}
         <motion.div
           variants={fadeUp}
           initial="initial"
           animate="animate"
           transition={{ duration: 0.6, ease: "easeOut" }}
-          className="relative mx-auto mb-8 w-60 sm:w-72 md:w-80"
+          style={{ y: portraitY }}
+          className="relative mx-auto mb-8 h-52 w-52 sm:h-60 sm:w-60"
         >
-          <div className="relative h-[32rem] w-full overflow-hidden rounded-full ring-1 ring-white/15 shadow-[0_0_60px_rgba(59,130,246,0.35)]">
+          <div className="relative h-full w-full overflow-hidden rounded-full ring-1 ring-border shadow-[0_10px_40px_-10px_rgba(0,0,0,0.7)]">
             <Image
               src="/profile.jpg"
               alt="Photo of Henry Nguyen"
-              width={1000}
-              height={1400}
+              width={400}
+              height={400}
               priority
               className="h-full w-full object-cover object-top"
             />
-            <div className="pointer-events-none absolute inset-0 rounded-full bg-gradient-to-b from-transparent via-transparent to-black/10" />
           </div>
         </motion.div>
 
-        {/* text card */}
+        {/* text */}
         <motion.div
           variants={fadeUp}
           initial="initial"
           animate="animate"
           transition={{ duration: 0.6, ease: "easeOut", delay: 0.1 }}
-          className="mx-auto max-w-2xl rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur sm:p-8"
+          className="mx-auto max-w-2xl"
         >
-          <h1 className="text-5xl font-extrabold tracking-tight sm:text-6xl">
-            <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-              Henry Nguyen
-            </span>
+          <span className="inline-flex items-center gap-2 rounded-full border border-border bg-surface-elevated px-3 py-1 text-xs font-medium text-ink-muted shadow-card">
+            <span className="h-1.5 w-1.5 rounded-full bg-accent" aria-hidden />
+            CS Student @ UTD
+          </span>
+
+          <h1 className="mt-5 text-5xl font-semibold tracking-tight text-ink sm:text-6xl">
+            Henry Nguyen
           </h1>
 
-          <p className="mt-4 text-lg leading-relaxed text-neutral-200">
+          <p className="mt-5 text-lg leading-relaxed text-ink-muted">
             Hello! I am currently a student @ UTD pursuing a CS degree with a minor in
             cybersecurity, focused on software, AI, and data-driven development.
           </p>
@@ -265,28 +326,37 @@ export default function Home() {
             initial="initial"
             animate="animate"
             transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
-            className="mt-6 flex items-center justify-center gap-4"
+            className="mt-9 flex flex-wrap items-center justify-center gap-4"
           >
-            <a
-              href="/resume.pdf" 
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center rounded-xl bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 px-5 py-2.5 text-sm font-medium text-white shadow-md transition hover:opacity-90"
-            >
+            <a href="/resume.pdf" target="_blank" rel="noopener noreferrer" className={primaryBtn}>
               View Resume
             </a>
-            <a
-              href="#experience"
-              className="inline-flex items-center rounded-xl bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 px-5 py-2.5 text-sm font-medium text-white shadow-md transition hover:opacity-90"
-            >
+            <a href="#experience" className={secondaryBtn}>
               See experience
             </a>
-            <a
-              href="#contact"
-              className="inline-flex items-center rounded-xl border border-white/15 bg-white/5 px-5 py-2.5 text-sm font-medium text-neutral-100 transition hover:bg-white/10"
-            >
+            <a href="#contact" className={secondaryBtn}>
               Contact
             </a>
+          </motion.div>
+
+          {/* Quick stats — computed from the actual data below, not hardcoded */}
+          <motion.div
+            variants={fadeUp}
+            initial="initial"
+            animate="animate"
+            transition={{ duration: 0.6, ease: "easeOut", delay: 0.3 }}
+            className="mt-12 flex items-center justify-center divide-x divide-border"
+          >
+            {[
+              { label: "Projects", value: projects.length },
+              { label: "Roles", value: experiences.length },
+              { label: "Technologies", value: skillItems.length },
+            ].map((s) => (
+              <div key={s.label} className="px-6 text-center first:pl-0 last:pr-0 sm:px-10">
+                <div className="text-3xl font-semibold text-ink">{s.value}</div>
+                <div className="mt-1 text-xs uppercase tracking-wide text-ink-faint">{s.label}</div>
+              </div>
+            ))}
           </motion.div>
         </motion.div>
       </section>
@@ -301,21 +371,32 @@ export default function Home() {
       <ProjectsShowcase />
 
       {/* ---- CONTACT / FOOTER ---- */}
-      <footer id="contact" className="relative z-10 mx-auto w-full max-w-6xl px-4 py-16 border-t border-white/10">
-        <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-blue-500/10 via-purple-500/10 to-transparent p-8 sm:p-10 backdrop-blur">
-          <div className="grid items-center gap-10 md:grid-cols-2">
+      <motion.footer
+        {...reveal}
+        id="contact"
+        className="relative mx-auto w-full max-w-6xl px-4 py-16"
+      >
+        <div className="relative overflow-hidden rounded-2xl border border-border bg-surface-elevated p-8 sm:p-10 shadow-card">
+          <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-accent/60 to-transparent" />
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-x-0 -top-32 flex justify-center"
+          >
+            <div className="h-[320px] w-[320px] rounded-full bg-accent/[0.16] blur-[100px]" />
+          </div>
+
+          <div className="relative grid items-center gap-10 md:grid-cols-2">
             {/* Contact info */}
             <div className="text-center">
-              <h2 className="text-3xl sm:text-4xl font-extrabold">
-                <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-                  Contact
-                </span>
-              </h2>
-              <p className="mt-4 text-lg sm:text-xl text-neutral-200">
+              <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-accent">
+                Get In Touch
+              </p>
+              <h2 className="text-3xl sm:text-4xl font-semibold text-ink">Contact</h2>
+              <p className="mt-4 text-lg sm:text-xl text-ink-muted">
                 Email:{" "}
                 <a
                   href="mailto:henrynguyen2394@gmail.com"
-                  className="font-medium underline decoration-white/40 underline-offset-4 hover:decoration-transparent hover:text-white transition"
+                  className="font-medium text-ink underline decoration-border-hover underline-offset-4 transition hover:text-accent hover:decoration-accent/60"
                 >
                   henrynguyen2394@gmail.com
                 </a>
@@ -324,16 +405,16 @@ export default function Home() {
 
             {/* Socials */}
             <div className="text-center">
-              <h3 className="text-3xl sm:text-4xl font-extrabold text-white">Socials</h3>
+              <h3 className="text-3xl sm:text-4xl font-semibold text-ink">Socials</h3>
               <div className="mt-6 flex justify-center gap-5">
                 <a
                   href="https://www.linkedin.com/in/henry-nguyen231"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex h-14 w-14 items-center justify-center rounded-full border border-white/15 bg-white/10 hover:bg-white/20 transition"
+                  className="flex h-14 w-14 items-center justify-center rounded-full border border-border transition hover:border-border-hover hover:bg-surface-elevated-hover"
                   aria-label="LinkedIn"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" className="h-7 w-7 text-white">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" className="h-7 w-7 text-ink">
                     <path d="M4.98 3.5C4.98 5 3.88 6 2.5 6S0 5 0 3.5 1.1 1 2.5 1s2.48 1 2.48 2.5zM.02 8.5h4.95V24H.02V8.5zM8.98 8.5h4.72v2.1h.07c.66-1.25 2.28-2.58 4.69-2.58 5.01 0 5.94 3.3 5.94 7.59V24h-4.94v-6.77c0-1.61-.03-3.69-2.25-3.69-2.26 0-2.6 1.76-2.6 3.57V24H8.98V8.5z" />
                   </svg>
                 </a>
@@ -341,10 +422,10 @@ export default function Home() {
                   href="https://github.com/HenryWinNguyen"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex h-14 w-14 items-center justify-center rounded-full border border-white/15 bg-white/10 hover:bg-white/20 transition"
+                  className="flex h-14 w-14 items-center justify-center rounded-full border border-border transition hover:border-border-hover hover:bg-surface-elevated-hover"
                   aria-label="GitHub"
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" className="h-7 w-7 text-white">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" className="h-7 w-7 text-ink">
                     <path d="M12 .5C5.73.5.5 5.73.5 12.02c0 5.09 3.29 9.4 7.86 10.94.58.1.79-.26.79-.57v-2.02c-3.2.7-3.88-1.37-3.88-1.37-.53-1.36-1.3-1.73-1.3-1.73-1.07-.73.08-.71.08-.71 1.18.09 1.8 1.22 1.8 1.22 1.05 1.8 2.76 1.28 3.43.98.1-.77.41-1.28.75-1.57-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.1-.12-.3-.52-1.52.12-3.17 0 0 .97-.31 3.18 1.18a11.1 11.1 0 0 1 5.8 0c2.21-1.49 3.18-1.18 3.18-1.18.64 1.65.24 2.87.12 3.17.74.81 1.19 1.84 1.19 3.1 0 4.43-2.7 5.4-5.26 5.68.42.37.8 1.1.8 2.22v3.29c0 .31.21.67.8.56A10.52 10.52 0 0 0 23.5 12c0-6.29-5.23-11.5-11.5-11.5z" />
                   </svg>
                 </a>
@@ -352,7 +433,7 @@ export default function Home() {
             </div>
           </div>
         </div>
-      </footer>
+      </motion.footer>
     </main>
   );
 }

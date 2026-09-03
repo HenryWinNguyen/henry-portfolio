@@ -1,6 +1,17 @@
 // app/layout.tsx
 import type { Metadata } from "next";
+import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css"; // remove this line if you don't have app/globals.css
+
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
+
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
 
 export const metadata: Metadata = {
   title: {
@@ -36,7 +47,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="bg-neutral-950 text-neutral-100 antialiased">
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} bg-surface text-ink antialiased font-sans`}
+      >
+        <div aria-hidden className="grain-overlay pointer-events-none fixed inset-0 z-[999]" />
         {children}
       </body>
     </html>

@@ -1,10 +1,5 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @keyframes skills-marquee {
   0% { transform: translateX(0); }
   100% { transform: translateX(-50%); }
@@ -15,28 +10,40 @@
   will-change: transform;
 }
 
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+@theme {
+  /* Warm cream background — kept clearly distinct from pure white so elevated cards actually pop */
+  --color-surface: #f0e9dc;
+  --color-surface-elevated: #ffffff;
+  --color-surface-elevated-hover: #faf7f1;
+  --color-border: rgba(24, 24, 27, 0.09);
+  --color-border-hover: rgba(24, 24, 27, 0.20);
+  --color-border-accent: rgba(180, 83, 9, 0.45);
+
+  --color-ink: #18181b;
+  --color-ink-muted: #57575f;
+  --color-ink-faint: #8b8b91;
+
+  /* Single deliberate accent — used sparingly for CTAs, hovers, active states */
+  --color-accent: #d97706;
+  --color-accent-ink: #2b1704;
+
+  /* Soft paper-elevation shadows instead of hard dark-mode drop shadows */
+  --shadow-card: 0 1px 2px rgba(24, 24, 27, 0.04), 0 20px 40px -22px rgba(24, 24, 27, 0.16);
+  --shadow-card-hover: 0 1px 2px rgba(24, 24, 27, 0.05), 0 28px 56px -24px rgba(24, 24, 27, 0.20);
 }
 
 html {
   scroll-behavior: smooth;
 }
 
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Subtle paper-grain texture so flat sections read as material, not empty */
+.grain-overlay {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.035;
+  mix-blend-mode: multiply;
 }
